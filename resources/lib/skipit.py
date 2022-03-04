@@ -67,9 +67,30 @@ class SkipItWindow(xbmcgui.WindowXMLDialog):
           reset()
           skip_backward()
 
+
+def do_skip(skip_secs):
+    # We need to track the actual skip, in case we run past the end
+    totalTime = xbmc.Player().getTotalTime()
+    preSeekTime = xbmc.Player().getTime()
+    
+    seek_to = preSeekTime + skip_secs;
+    if seek_to < 1 :
+        seek_to = 1;
+    if seek_to > (totalTime - 1):    
+        seek_to = totalTime - 1;
+    xbmc.Player().seekTime(seek_to)
+    # Now work out how far we went (might have run to the end or start
+    postSeekTime = xbmc.Player().getTime()
+    return round(postSeekTime - preSeekTime)
+
 def skip_forward():
+    
+    if not(xbmc.Player().isPlaying()):
+        close_me()
+        return 
     # 
     # Skip forward the required amount
+    global addonname
     global skip_secs
     global going_forward
     going_forward = True
@@ -77,13 +98,23 @@ def skip_forward():
     reset_timer()
     halve()
     set_label(skip_secs, True)
-    command = build_command(skip_secs - slippage, True)
-    xbmc.executebuiltin(command)
+    requested_skip = skip_secs - slippage
+    actual_skip = do_skip(requested_skip)
+    if actual_skip != requested_skip:
+        skip_secs = abs(actual_skip)
+        command = 'Notification({},{})'
+        command = command.format(addonname, ADDON.getLocalizedString(32135)) 
+        xbmc.executebuiltin(command)
+   
     return 
 
 def skip_backward():
+    if not(xbmc.Player().isPlaying()):
+        close_me()
+        return 
     # 
     # Skip forward the required amount
+    global addonname
     global skip_secs
     global going_backward
     going_backward = True
@@ -92,8 +123,15 @@ def skip_backward():
     halve()
     set_label(skip_secs, False)
     # Add a couple of extra seconds as the video is still playing forwards
-    command = build_command(skip_secs + slippage, False)
-    xbmc.executebuiltin(command)
+    requested_skip = - skip_secs + slippage
+    actual_skip = do_skip(requested_skip);
+    if actual_skip != requested_skip:
+        skip_secs = abs(actual_skip)
+        text = ADDON.getLocalizedString(32130)
+        command = 'Notification({},{})'
+        command = command.format(addonname, ADDON.getLocalizedString(32130)) 
+        xbmc.executebuiltin(command)
+    
     return 
 
 def set_label(seconds, forward):
