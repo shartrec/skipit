@@ -122,7 +122,7 @@ def skip_backward():
     halve()
     set_label(skip_secs, False)
     # Add a couple of extra seconds as the video is still playing forwards
-    requested_skip = - skip_secs + slippage
+    requested_skip = -(skip_secs + slippage)
     actual_skip = do_skip(requested_skip);
     if actual_skip != requested_skip:
         skip_secs = abs(actual_skip)
