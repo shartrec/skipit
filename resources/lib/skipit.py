@@ -181,6 +181,8 @@ def close_me():
     global ui
     if my_timer:
         my_timer.cancel()
+    label = ui.getControl(1)
+    label.setLabel('')
     ui.close()
 
 def reset_timer():
