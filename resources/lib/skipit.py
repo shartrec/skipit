@@ -102,9 +102,7 @@ def skip_forward():
     actual_skip = do_skip(requested_skip)
     if actual_skip != requested_skip:
         skip_secs = abs(actual_skip)
-        command = 'Notification({},{})'
-        command = command.format(addonname, ADDON.getLocalizedString(32135)) 
-        xbmc.executebuiltin(command)
+        xbmcgui.Dialog().notification(addonname, ADDON.getLocalizedString(32135))
     return 
 
 def skip_backward():
@@ -126,9 +124,7 @@ def skip_backward():
     actual_skip = do_skip(requested_skip);
     if actual_skip != requested_skip:
         skip_secs = abs(actual_skip)
-        command = 'Notification({},{})'
-        command = command.format(addonname, ADDON.getLocalizedString(32130)) 
-        xbmc.executebuiltin(command)
+        xbmcgui.Dialog().notification(addonname, ADDON.getLocalizedString(32130))
     return 
 
 def set_label(seconds, forward):
