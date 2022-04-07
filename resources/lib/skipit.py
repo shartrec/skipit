@@ -71,17 +71,18 @@ class SkipItWindow(xbmcgui.WindowXMLDialog):
 
 def do_skip(skip_secs):
     # We need to track the actual skip, in case we run past the end
-    totalTime = xbmc.Player().getTotalTime()
-    preSeekTime = xbmc.Player().getTime()
+    player = xbmc.Player()
+    totalTime = player.getTotalTime()
+    preSeekTime = player.getTime()
 
     seek_to = preSeekTime + skip_secs;
     if seek_to < 1:
         seek_to = 1;
     if seek_to > (totalTime - 1):
         seek_to = totalTime - 1;
-    xbmc.Player().seekTime(seek_to)
+    player.seekTime(seek_to)
     # Now work out how far we went (might have run to the end or start
-    postSeekTime = xbmc.Player().getTime()
+    postSeekTime = player.getTime()
     return round(postSeekTime - preSeekTime)
 
 
